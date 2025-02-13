@@ -31,17 +31,17 @@ export const getAwardsall = async (req, res) => {
 
 export const getAwardsone = async (req, res) => {
     try {
-        // Assuming we're looking for an award by its ID, or you can customize it based on your needs
-        const awardData = await Award.findOne(req.body);  // Find an award based on the provided criteria (e.g., award ID, year, etc.)
+        const { id } = req.params; // Get the ID from the URL
+        const awardData = await Award.findById(id);  // Find an award by ID
 
         if (!awardData) {
-            return res.status(404).json({ msg: "Award not found" });  // Return 404 if no award is found
+            return res.status(404).json({ msg: "Award not found" });
         }
 
-        res.status(200).json(awardData);  // Return the found award data
+        res.status(200).json(awardData);
 
     } catch (err) {
-        res.status(500).json({ error: err.message });  // Return any errors encountered during the request
+        res.status(500).json({ error: err.message });
     }
 };
 

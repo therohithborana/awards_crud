@@ -1,138 +1,8 @@
-// import React, { useEffect, useState } from "react";
-// import { Link, useNavigate, useParams } from "react-router-dom";
-// import axios from "axios";
-// import toast from "react-hot-toast";
-// import "bootstrap@5.3.3/dist/css/bootstrap.min.css"; // Ensure you have the relevant CSS file for styling
-
-// const Edit = () => {
-//   // Initial state for an award
-//   const initialAward = {
-//     award_name: "",
-//     category: "",
-//     recipient: "",
-//     year: "",
-//     description: ""
-//   };
-
-//   const { id } = useParams(); // Retrieve the award ID from the URL
-//   const navigate = useNavigate();
-//   const [award, setAward] = useState(initialAward);
-
-//   // Handle input changes
-//   const inputChangeHandler = (e) => {
-//     const { name, value } = e.target;
-//     setAward({ ...award, [name]: value });
-//   };
-
-//   // Fetch the award data on component mount
-//   useEffect(() => {
-//     axios
-//       .get(`http://localhost:8000/api/getone/${id}`)
-//       .then((response) => {
-//         setAward(response.data); // Populate form with award data
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//       });
-//   }, [id]);
-
-//   // Handle form submission
-//   const submitForm = async (e) => {
-//     e.preventDefault();
-//     await axios
-//       .put(`http://localhost:8000/api/changemaadu/${id}`, award)
-//       .then((response) => {
-//         toast.success(response.data.msg, { position: "top-right" });
-//         navigate("/"); // Navigate back to the homepage
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//         toast.error("Failed to update the award. Please try again.");
-//       });
-//   };
-
-//   return (
-//     <div className="form-container">
-//       <Link to="/">Back</Link>
-//       <h3>Update Award</h3>
-//       <form className="form" onSubmit={submitForm}>
-//         <div className="inputGroup">
-//           <label htmlFor="award_name">Award Name</label>
-//           <input
-//             type="text"
-//             value={award.award_name}
-//             onChange={inputChangeHandler}
-//             id="award_name"
-//             name="award_name"
-//             autoComplete="off"
-//             placeholder="Award Name"
-//           />
-//         </div>
-//         <div className="inputGroup">
-//           <label htmlFor="category">Category</label>
-//           <input
-//             type="text"
-//             value={award.category}
-//             onChange={inputChangeHandler}
-//             id="category"
-//             name="category"
-//             autoComplete="off"
-//             placeholder="Category"
-//           />
-//         </div>
-//         <div className="inputGroup">
-//           <label htmlFor="recipient">Recipient</label>
-//           <input
-//             type="text"
-//             value={award.recipient}
-//             onChange={inputChangeHandler}
-//             id="recipient"
-//             name="recipient"
-//             autoComplete="off"
-//             placeholder="Recipient"
-//           />
-//         </div>
-//         <div className="inputGroup">
-//           <label htmlFor="year">Year</label>
-//           <input
-//             type="number"
-//             value={award.year}
-//             onChange={inputChangeHandler}
-//             id="year"
-//             name="year"
-//             autoComplete="off"
-//             placeholder="Year"
-//           />
-//         </div>
-//         <div className="inputGroup">
-//           <label htmlFor="description">Description</label>
-//           <textarea
-//             value={award.description}
-//             onChange={inputChangeHandler}
-//             id="description"
-//             name="description"
-//             autoComplete="off"
-//             placeholder="Description"
-//             rows="4"
-//           />
-//         </div>
-//         <div className="inputGroup">
-//           <button type="submit">UPDATE AWARD</button>
-//         </div>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default Edit;
-
-
-
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap is included
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Edit = () => {
   const initialAward = {
@@ -147,40 +17,41 @@ const Edit = () => {
   const navigate = useNavigate();
   const [award, setAward] = useState(initialAward);
 
+  // Fetch the award data when component mounts
+  useEffect(() => {
+    const fetchAward = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/getone/${id}`);
+        setAward(response.data);
+      } catch (error) {
+        console.error("Error fetching award:", error);
+        toast.error("Failed to fetch award data");
+      }
+    };
+
+    fetchAward();
+  }, [id]);
+
   const inputChangeHandler = (e) => {
     const { name, value } = e.target;
     setAward({ ...award, [name]: value });
   };
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8000/api/getone/${id}`)
-      .then((response) => {
-        setAward(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [id]);
-
   const submitForm = async (e) => {
     e.preventDefault();
-    await axios
-      .put(`http://localhost:8000/api/changemaadu/${id}`, award)
-      .then((response) => {
-        toast.success(response.data.msg, { position: "top-right" });
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error("Failed to update the award. Please try again.");
-      });
+    try {
+      const response = await axios.put(`http://localhost:8000/api/changemaadu/${id}`, award);
+      toast.success(response.data.msg, { position: "top-right" });
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update the award. Please try again.");
+    }
   };
 
   return (
     <div className="container mt-5">
       <div className="row">
-        {/* Form Section */}
         <div className="col-md-6">
           <Link to="/" className="btn btn-secondary mb-3">Back</Link>
           <h3 className="mb-4">Update Award</h3>
@@ -248,11 +119,9 @@ const Edit = () => {
             <button type="submit" className="btn btn-primary w-100">UPDATE AWARD</button>
           </form>
         </div>
-
-        {/* Image Section */}
         <div className="col-md-6 d-flex justify-content-center align-items-center">
           <img
-            src="https://img.freepik.com/premium-vector/awards-ceremony-winners-losers-cartoon-banner_82574-3989.jpg" // Replace with actual image of a person holding an award
+            src="https://img.freepik.com/premium-vector/awards-ceremony-winners-losers-cartoon-banner_82574-3989.jpg"
             alt="Person holding award"
             className="img-fluid rounded-circle"
             style={{ maxWidth: "80%" }}

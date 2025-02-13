@@ -5,7 +5,7 @@ const route = express.Router();
 
 // Define the routes for creating, getting, and deleting awards
 route.post("/create", createAward);  // Route to create an award
-route.get("/ondu", getAwardsone);     // Route to get awards (this can be customized based on your needs)
+route.get("/getone/:id", getAwardsone);     // Route to get awards (this can be customized based on your needs)
 route.delete("/delete/:id", deleteAward); // Route to delete an award
 route.get("/yella",getAwardsall);
 route.put("/changemaadu/:id",updateAward)
