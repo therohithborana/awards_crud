@@ -18,13 +18,12 @@ const PORT = process.env.PORT || 8000;
 const URL = process.env.MONGO_URL;
 
 // Connect to MongoDB
-mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log("DB connected successfully");
-    })
-    .catch((err) => {
-        console.error("DB connection failed", err);
-    });
+mongoose.connect(URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+.then(() => console.log("✅ MongoDB Atlas connected successfully!"))
+.catch(err => console.error("❌ MongoDB connection failed:", err));
 
 // Set up the server to listen on the specified port
 app.listen(PORT, () => {
